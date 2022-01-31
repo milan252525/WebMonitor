@@ -1,6 +1,7 @@
 package cz.cuni.mff.webmonitor;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -36,9 +37,12 @@ public class HTTPRequester {
             System.out.println(response.headers().map().toString());
 
 
-        } catch (IOException | InterruptedException e) {
+        } catch (ConnectException e) {
+            System.out.println("UNREACHABLE: " + e);
+        }
+
+        catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            return;
         }
 
     }
