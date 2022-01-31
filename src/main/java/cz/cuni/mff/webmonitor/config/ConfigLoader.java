@@ -6,7 +6,6 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import static cz.cuni.mff.webmonitor.Messages.messages;
@@ -36,9 +35,7 @@ public class ConfigLoader {
         @SuppressWarnings("unchecked")
         var services = (ArrayList<Map<String, Object>>) config.get("services");
 
-        List<ServiceConfig> results = extractServices(services, email);
-
-        return results;
+        return extractServices(services, email);
     }
 
     private static Object getCheck(Map<String, Object> map, String key) throws ConfigException {
@@ -54,6 +51,7 @@ public class ConfigLoader {
 
         for (Map<String, Object> service: services) {
             ServiceConfig serviceConfig = new ServiceConfig();
+            serviceConfig.email = email;
             serviceConfig.webAddress = (String) getCheck(service, "address");
             serviceConfig.logFile = (String) getCheck(service, "log");
 
