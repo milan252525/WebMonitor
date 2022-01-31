@@ -1,14 +1,20 @@
-email: mail@email.com
+email: email@example.com
 
-monitor:
-  -   address: https://www.google.com
-      status: all
-      log: google.log
-      notify: email
-      interval: 120s
+services:
+  - address: https://www.google.com
+    status: all
+    log: google.log
+    notify: email
+    interval: 120s
 
-  -   address: https://www.mff.cuni.cz/
-      status: [5*, 4*]
-      log: mff.log
-      notify: off
-      interval: 5m
+  - address: https://www.mff.cuni.cz/
+    status: [5*, 4*]
+    log: mff.log
+    notify: off
+    interval: 5m
+
+  - address: https://doesntexist.com
+    status: all
+    log:
+    notify: off
+

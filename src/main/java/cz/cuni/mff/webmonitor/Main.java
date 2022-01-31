@@ -1,13 +1,16 @@
 package cz.cuni.mff.webmonitor;
 
+import cz.cuni.mff.webmonitor.config.ServiceConfig;
+import cz.cuni.mff.webmonitor.config.ConfigException;
+import cz.cuni.mff.webmonitor.config.ConfigLoader;
+
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
-        //HTTPRequester req = new HTTPRequester();
+        HTTPRequester req = new HTTPRequester();
 
         /*
             req.request("https://www.google.com");
@@ -19,12 +22,13 @@ public class Main {
         */
 
         try {
-            List<Config> configs = Config.loadFromFile(new FileReader("examples/config-example.yaml"));
-            for (Config conf : configs) {
+            List<ServiceConfig> serviceConfigs = ConfigLoader.loadFromFile(new FileInputStream("examples/config-example.yaml"));
+            for (ServiceConfig conf : serviceConfigs) {
                 System.out.println(conf.toString());
+                req.request(conf.getWebAddress());
             }
         } catch (ConfigException e) {
-            System.err.println(e.getMessage());
+            System.err.println(Messages.messages.getString("CONFIG_ERROR") + ": " + e.getMessage());
             System.exit(1);
         }
     }
