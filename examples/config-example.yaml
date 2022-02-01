@@ -11,10 +11,11 @@ services:
     status: [5*, 4*]
     log: mff.log
     notify: off
-    interval: 5m
+    interval: 3m30s
 
   - address: https://doesntexist.com
     status: all
     log:
-    notify: off
+    notify: false
+    interval: 1h30m
 
