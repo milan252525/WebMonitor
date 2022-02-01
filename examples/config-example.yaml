@@ -6,16 +6,19 @@ services:
     log: google.log
     notify: email
     interval: 120s
+    timeout: 1s
 
   - address: https://www.mff.cuni.cz/
     status: [5*, 4*]
     log: mff.log
     notify: off
     interval: 3m30s
+    timeout: 5s
 
   - address: https://doesntexist.com
     status: all
     log:
     notify: false
     interval: 1h30m
+    timeout: 2s
 

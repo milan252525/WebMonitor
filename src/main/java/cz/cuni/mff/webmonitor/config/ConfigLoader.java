@@ -1,10 +1,13 @@
 package cz.cuni.mff.webmonitor.config;
 
+import cz.cuni.mff.webmonitor.Constants;
 import cz.cuni.mff.webmonitor.NotifyLevel;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -69,14 +72,27 @@ public class ConfigLoader {
      * @throws ConfigException Value is not present
      */
     private static Object getIfPresent(Map<String, Object> map, String key, String addressForException) throws ConfigException {
-        if (!map.containsKey(key)) {
-            if (addressForException != null) {
-                addressForException = "[" + addressForException + "] ";
-            }
-            throw new ConfigException(addressForException + messages.getString("KEY_" + key.toUpperCase()));
-        } else {
+        if (map.containsKey(key))
+            return map.get(key);
+
+        if (addressForException != null)
+            throw new ConfigException("[" + addressForException + "] " + messages.getString("KEY_" + key.toUpperCase()));
+        else
+            throw new ConfigException(messages.getString("KEY_" + key.toUpperCase()));
+    }
+
+    /**
+     * eturn value from a map if it exists, else return default value
+     * @param map Map representing YAML configuration
+     * @param key Key to look for
+     * @param defaultReturn Default value to return
+     * @return Value or defaultReturn
+     */
+    private static Object getOrDefault(Map<String, Object> map, String key, Object defaultReturn) {
+        if (map.containsKey(key)) {
             return map.get(key);
         }
+        return defaultReturn;
     }
 
     /**
@@ -91,11 +107,18 @@ public class ConfigLoader {
 
         for (Map<String, Object> service: services) {
             ServiceConfig serviceConfig = new ServiceConfig(globalConfig);
-            serviceConfig.webAddress = (String) getIfPresent(service, "address");
-            serviceConfig.logFile = (String) getIfPresent(service, "log", serviceConfig.webAddress);
+
+            String address = (String) getIfPresent(service, "address");
+            try {
+                serviceConfig.URIAddress = new URI(address);
+            } catch (URISyntaxException e) {
+                throw new ConfigException("[" + address + "] " + messages.getString("ADDRESS_INVALID"));
+            }
+
+            serviceConfig.logFile = (String) getIfPresent(service, "log", serviceConfig.URIAddress.toString());
 
             // accept all possibilities - null (no entry), String ("email", ...) or Boolean ("false")
-            Object notifyLevelObject = getIfPresent(service, "notify", serviceConfig.webAddress).toString();
+            Object notifyLevelObject = getIfPresent(service, "notify", serviceConfig.URIAddress.toString()).toString();
             if (notifyLevelObject == null)
                 serviceConfig.notifyLevel = NotifyLevel.FALSE;
             else {
@@ -106,8 +129,19 @@ public class ConfigLoader {
                 }
             }
 
-            String interval = (String) getIfPresent(service, "interval", serviceConfig.webAddress);
-            serviceConfig.interval = strTimeToDuration(interval.toUpperCase(), serviceConfig.webAddress);
+            String intervalString = (String) getIfPresent(service, "interval", serviceConfig.URIAddress.toString());
+            Duration interval = strTimeToDuration(intervalString.toUpperCase());
+
+            if (interval == null)
+                throw new ConfigException("[" + serviceConfig.URIAddress + "] " + messages.getString("INTERVAL_INVALID"));
+            if (interval.getSeconds() < Constants.shortestInterval)
+                throw new ConfigException("[" + serviceConfig.URIAddress + "] " + messages.getString("INTERVAL_SHORT"));
+            serviceConfig.interval = interval;
+
+            Duration timeout = strTimeToDuration((String) getOrDefault(service, "timeout", Constants.defaultTimeout));
+            if (timeout == null)
+                throw new ConfigException("[" + serviceConfig.URIAddress + "] " + messages.getString("TIMEOUT_INVALID"));
+            serviceConfig.timeout = timeout;
 
             configs.add(serviceConfig);
         }
@@ -118,12 +152,12 @@ public class ConfigLoader {
     /**
      * Convert time string into java.time.Duration
      * @param time Time string with format "00h00m00s", all time units are optional
-     * @param addressForException Service address to print in case of config exception
-     * @return Duration object representing interval
-     * @throws ConfigException Invalid input string or too short interval (< 10s)
+     * @return Duration object representing interval, null if the input string was invalid
      */
-    private static Duration strTimeToDuration(String time, String addressForException) throws ConfigException {
-        Duration duration;
+    private static Duration strTimeToDuration(String time) {
+        if (time == null)
+            return null;
+
         String ISOFormat;
         if (time.contains("D")) {
             ISOFormat = "P".concat(time.replace("d", "DT").toUpperCase());
@@ -132,14 +166,9 @@ public class ConfigLoader {
         }
 
         try {
-            duration = Duration.parse(ISOFormat);
+            return Duration.parse(ISOFormat);
         } catch (DateTimeParseException e) {
-            throw new ConfigException("[" + addressForException + "] " + messages.getString("INTERVAL_INVALID"));
+            return null;
         }
-
-        if (duration.isNegative() || duration.getSeconds() < 10) {
-            throw new ConfigException("[" + addressForException + "] " + messages.getString("INTERVAL_SHORT"));
-        }
-        return duration;
     }
 }

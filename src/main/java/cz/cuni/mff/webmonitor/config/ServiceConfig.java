@@ -2,15 +2,17 @@ package cz.cuni.mff.webmonitor.config;
 
 import cz.cuni.mff.webmonitor.NotifyLevel;
 
+import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 
 public class ServiceConfig {
-    String webAddress;
+    URI URIAddress;
     NotifyLevel notifyLevel;
     String logFile;
     List<String> statusList;
     Duration interval;
+    Duration timeout;
     GlobalConfig globalConfig;
 
     public ServiceConfig(GlobalConfig globalConfig) {
@@ -20,17 +22,17 @@ public class ServiceConfig {
     @Override
     public String toString() {
         return "ServiceConfig{" +
-                "webAddress='" + webAddress + '\'' +
+                "URIAddress=" + URIAddress +
                 ", notifyLevel=" + notifyLevel +
                 ", logFile='" + logFile + '\'' +
                 ", statusList=" + statusList +
                 ", interval=" + interval +
-                ", globalConfig=" + globalConfig.toString() +
+                ", timeout=" + timeout +
                 '}';
     }
 
-    public String getWebAddress() {
-        return webAddress;
+    public URI getURIAddress() {
+        return URIAddress;
     }
 
     public NotifyLevel getNotifyLevel() {
@@ -46,4 +48,6 @@ public class ServiceConfig {
     }
 
     public Duration getInterval() { return interval; }
+
+    public Duration getTimeout() { return timeout; }
 }

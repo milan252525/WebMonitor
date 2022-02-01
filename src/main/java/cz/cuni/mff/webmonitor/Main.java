@@ -25,7 +25,7 @@ public class Main {
             List<ServiceConfig> serviceConfigs = ConfigLoader.loadFromFile(new FileInputStream("examples/config-example.yaml"));
             for (ServiceConfig conf : serviceConfigs) {
                 System.out.println(conf.toString());
-                req.request(conf.getWebAddress());
+                req.request(conf);
             }
         } catch (ConfigException e) {
             System.err.println(Messages.messages.getString("CONFIG_ERROR") + ": " + e.getMessage());

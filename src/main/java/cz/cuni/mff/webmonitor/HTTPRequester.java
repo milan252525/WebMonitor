@@ -1,14 +1,10 @@
 package cz.cuni.mff.webmonitor;
 
+import cz.cuni.mff.webmonitor.config.ServiceConfig;
+
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
+import java.net.http.*;
 
 public class HTTPRequester {
     private final HttpClient client;
@@ -17,19 +13,12 @@ public class HTTPRequester {
         client = HttpClient.newHttpClient();
     }
 
-
-    public void request(String address) {
-        HttpRequest request;
-        try {
-            request = HttpRequest.newBuilder()
-                    .uri(new URI(address))
-                    .timeout(Duration.of(5, ChronoUnit.SECONDS))
-                    .GET().build();
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return;
-        }
+    public void request(ServiceConfig serviceConfig) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(serviceConfig.getURIAddress())
+                .timeout(serviceConfig.getTimeout())
+                .GET()
+                .build();
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -39,9 +28,9 @@ public class HTTPRequester {
 
         } catch (ConnectException e) {
             System.out.println("UNREACHABLE: " + e);
-        }
-
-        catch (IOException | InterruptedException e) {
+        } catch (HttpTimeoutException e) {
+            System.out.println("TIMEOUT: " + e);
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
