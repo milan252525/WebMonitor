@@ -1,0 +1,8 @@
+email: email@example.com
+
+services:
+  - address: https://www.example.com
+    log: example.log
+    notify: email
+    interval: 2h30m30s
+    timeout: 5s
