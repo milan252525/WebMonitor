@@ -6,6 +6,9 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 
+/**
+ * Class holding configuration of a specific monitored service
+ */
 public class ServiceConfig {
     URI URIAddress;
     NotifyLevel notifyLevel;
@@ -13,8 +16,13 @@ public class ServiceConfig {
     List<String> statusList;
     Duration interval;
     Duration timeout;
-    GlobalConfig globalConfig;
 
+    private final GlobalConfig globalConfig;
+
+    /**
+     * Initialize service configuration
+     * @param globalConfig Instance of global configuration
+     */
     public ServiceConfig(GlobalConfig globalConfig) {
         this.globalConfig = globalConfig;
     }
@@ -50,4 +58,6 @@ public class ServiceConfig {
     public Duration getInterval() { return interval; }
 
     public Duration getTimeout() { return timeout; }
+
+    public String getEmail() { return globalConfig.getEmail(); }
 }

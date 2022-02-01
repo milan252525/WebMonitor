@@ -16,7 +16,15 @@ import java.util.Map;
 
 import static cz.cuni.mff.webmonitor.Messages.messages;
 
+/**
+ * Class with static methods for laoding configuration
+ */
 public class ConfigLoader {
+
+    /**
+     * Instances disabled
+     */
+    private ConfigLoader() {}
 
     /**
      * Load configuration from YAML file, consult documentation for proper format
@@ -37,8 +45,15 @@ public class ConfigLoader {
             throw new ConfigException(messages.getString("CONFIG_MISSING"));
         }
 
+        // email isn't required
         if (config.containsKey("email")) {
-            globalConfig.email = (String) config.get("email");
+            String email = (String) config.get("email");
+            // they key can be present without value, ignore
+            if (email != null ) {
+                if (email.contains("@"))
+                    globalConfig.email = email;
+                else throw new ConfigException(messages.getString("EMAIL_INVALID") + " " + email);
+            }
         }
 
         if (!config.containsKey("services")) {
@@ -102,7 +117,8 @@ public class ConfigLoader {
      * @return  List of configuration for each monitored service
      * @throws ConfigException Configuration was not properly formatted
      */
-    private static List<ServiceConfig> extractServices(List<Map<String, Object>> services, GlobalConfig globalConfig) throws ConfigException {
+    private static List<ServiceConfig> extractServices(List<Map<String, Object>> services,
+                                                       GlobalConfig globalConfig) throws ConfigException {
         ArrayList<ServiceConfig> configs = new ArrayList<>();
 
         for (Map<String, Object> service: services) {
@@ -123,9 +139,13 @@ public class ConfigLoader {
                 serviceConfig.notifyLevel = NotifyLevel.FALSE;
             else {
                 String notifyLevel = notifyLevelObject.toString();
-                switch (notifyLevel) {
-                    case "email"    ->  serviceConfig.notifyLevel = NotifyLevel.EMAIL;
-                    default         ->  serviceConfig.notifyLevel = NotifyLevel.FALSE;
+                if ("email".equals(notifyLevel)) {
+                    if (!globalConfig.hasValidEmail()) {
+                        throw new ConfigException(messages.getString("EMAIL_MISSING"));
+                    }
+                    serviceConfig.notifyLevel = NotifyLevel.EMAIL;
+                } else {
+                    serviceConfig.notifyLevel = NotifyLevel.FALSE;
                 }
             }
 
