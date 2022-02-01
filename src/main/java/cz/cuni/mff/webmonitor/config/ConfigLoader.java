@@ -17,7 +17,7 @@ import java.util.Map;
 import static cz.cuni.mff.webmonitor.Messages.messages;
 
 /**
- * Class with static methods for laoding configuration
+ * Class with static methods for loading configuration
  */
 public class ConfigLoader {
 
@@ -97,7 +97,7 @@ public class ConfigLoader {
     }
 
     /**
-     * eturn value from a map if it exists, else return default value
+     * Return value from a map if it exists, else return default value
      * @param map Map representing YAML configuration
      * @param key Key to look for
      * @param defaultReturn Default value to return
@@ -150,7 +150,7 @@ public class ConfigLoader {
             }
 
             String intervalString = (String) getIfPresent(service, "interval", serviceConfig.URIAddress.toString());
-            Duration interval = strTimeToDuration(intervalString.toUpperCase());
+            Duration interval = strTimeToDuration(intervalString);
 
             if (interval == null)
                 throw new ConfigException("[" + serviceConfig.URIAddress + "] " + messages.getString("INTERVAL_INVALID"));
@@ -174,13 +174,17 @@ public class ConfigLoader {
      * @param time Time string with format "00h00m00s", all time units are optional
      * @return Duration object representing interval, null if the input string was invalid
      */
-    private static Duration strTimeToDuration(String time) {
+    public static Duration strTimeToDuration(String time) {
         if (time == null)
             return null;
+        time = time.toUpperCase();
 
         String ISOFormat;
         if (time.contains("D")) {
-            ISOFormat = "P".concat(time.replace("d", "DT").toUpperCase());
+            ISOFormat = "P".concat(time.replace("D", "DT").toUpperCase());
+            if (ISOFormat.endsWith("T")) {
+                ISOFormat = ISOFormat.substring(0, ISOFormat.length()-1);
+            }
         } else {
             ISOFormat = "PT".concat(time.toUpperCase());
         }

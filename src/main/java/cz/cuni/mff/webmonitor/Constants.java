@@ -1,7 +1,5 @@
 package cz.cuni.mff.webmonitor;
 
-import java.time.Duration;
-
 public class Constants {
     private Constants() {} // disallow instances
 
