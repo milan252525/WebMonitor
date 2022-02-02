@@ -10,22 +10,18 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
-        HTTPRequester req = new HTTPRequester();
-
-        /*
-            req.request("https://www.google.com");
-            System.out.println();
-            req.request("http://laclubs.net/");
-            System.out.println();
-            req.request("https://laclubs.net/");
-            System.out.println();
-        */
+        Requester req = new Requester();
 
         try {
             List<ServiceConfig> serviceConfigs = ConfigLoader.loadFromFile(new FileInputStream("examples/config-example.yaml"));
             for (ServiceConfig conf : serviceConfigs) {
                 System.out.println(conf.toString());
-                req.request(conf);
+                ResponseData rd = req.request(conf);
+                if (rd.wasSuccess()) {
+                    System.out.println(rd.getResponse().toString());
+                } else {
+                    System.out.println(rd.getException().toString());
+                }
             }
         } catch (ConfigException e) {
             System.err.println(Messages.messages.getString("CONFIG_ERROR") + ": " + e.getMessage());
