@@ -1,6 +1,9 @@
 package cz.cuni.mff.webmonitor;
 
-public class Constants {
+/**
+ * Application constants needed in multiple places
+ */
+public final class Constants {
     private Constants() {} // disallow instances
 
     public final static String defaultTimeout = "5m";
