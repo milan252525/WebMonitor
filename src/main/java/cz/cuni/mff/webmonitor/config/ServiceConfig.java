@@ -1,7 +1,5 @@
 package cz.cuni.mff.webmonitor.config;
 
-import cz.cuni.mff.webmonitor.NotifyLevel;
-
 import java.net.URI;
 import java.time.Duration;
 import java.util.List;
@@ -55,9 +53,15 @@ public class ServiceConfig {
         return statusList;
     }
 
-    public Duration getInterval() { return interval; }
+    public Duration getInterval() {
+        return interval;
+    }
 
-    public Duration getTimeout() { return timeout; }
+    public Duration getTimeout() {
+        return timeout;
+    }
 
-    public String getEmail() { return globalConfig.getEmail(); }
+    public String getEmail() {
+        return globalConfig.getEmail();
+    }
 }

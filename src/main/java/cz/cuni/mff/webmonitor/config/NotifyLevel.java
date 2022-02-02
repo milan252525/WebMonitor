@@ -1,4 +1,4 @@
-package cz.cuni.mff.webmonitor;
+package cz.cuni.mff.webmonitor.config;
 
 public enum NotifyLevel {
     FALSE,
