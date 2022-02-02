@@ -9,9 +9,11 @@ public class GlobalConfig {
     /**
      * @return email
      */
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 
-    public Boolean hasValidEmail() {
+    public boolean hasValidEmail() {
         return email != null;
     }
 }

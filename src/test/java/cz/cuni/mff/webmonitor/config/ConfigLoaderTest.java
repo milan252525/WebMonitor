@@ -1,6 +1,5 @@
 package cz.cuni.mff.webmonitor.config;
 
-import cz.cuni.mff.webmonitor.NotifyLevel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

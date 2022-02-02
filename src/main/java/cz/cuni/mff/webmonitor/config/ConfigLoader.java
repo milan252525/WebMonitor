@@ -1,7 +1,6 @@
 package cz.cuni.mff.webmonitor.config;
 
 import cz.cuni.mff.webmonitor.Constants;
-import cz.cuni.mff.webmonitor.NotifyLevel;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
