@@ -29,9 +29,9 @@ public class Requester {
 
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return new ResponseData(response);
+            return new ResponseData(response, serviceConfig);
         } catch (Exception e) {
-            return new ResponseData(response, e);
+            return new ResponseData(response, serviceConfig, e);
         }
     }
 }

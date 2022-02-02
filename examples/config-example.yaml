@@ -8,17 +8,26 @@ services:
     interval: 120s
     timeout: 1s
 
-  - address: https://www.mff.cuni.cz/
+  - address: https://httpstat.us/200
     status: [5*, 4*]
     log: mff.log
     notify: off
     interval: 3m30s
     timeout: 5s
 
-  - address: https://doesntexist.com
-    status: all
-    log:
+  - address: https://httpstat.us/301
+    log: _
     notify: false
-    interval: 1h30m
-    timeout: 2s
+    interval: 1m
+
+  - address: https://httpstat.us/403
+    log: _
+    notify: false
+    interval: 1m
+
+  - address: https://httpstat.us/500
+    log: _
+    notify: false
+    interval: 1m
+
 

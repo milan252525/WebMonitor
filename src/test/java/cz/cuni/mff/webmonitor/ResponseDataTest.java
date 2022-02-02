@@ -1,5 +1,7 @@
 package cz.cuni.mff.webmonitor;
 
+import cz.cuni.mff.webmonitor.config.GlobalConfig;
+import cz.cuni.mff.webmonitor.config.ServiceConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -54,7 +56,8 @@ class ResponseDataTest {
         };
 
         Exception fakeException = new HttpTimeoutException("message");
-        ResponseData rd = new ResponseData(fakeResponse, fakeException);
+        ServiceConfig fakeConfig = new ServiceConfig(new GlobalConfig());
+        ResponseData rd = new ResponseData(fakeResponse, fakeConfig, fakeException);
 
         Assertions.assertFalse(rd.wasSuccess());
         Assertions.assertEquals(500, rd.getStatus());
