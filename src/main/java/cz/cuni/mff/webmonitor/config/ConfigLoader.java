@@ -174,10 +174,10 @@ public class ConfigLoader {
                 throw new ConfigException("[" + serviceConfig.URIAddress + "] " + messages.getString("TIMEOUT_INVALID"));
             serviceConfig.timeout = timeout;
 
-            String status = getIfPresent(service, "status", serviceConfig.URIAddress.toString()).toString();
-            if (status == null)
+            Object status = getOrDefault(service, "status", "any");
+            if (status == null) // key present but no value
                 status = "any";
-            serviceConfig.statusPattern = statusToPattern(status, serviceConfig);
+            serviceConfig.statusPattern = statusToPattern(status.toString(), serviceConfig);
 
             configs.add(serviceConfig);
         }
