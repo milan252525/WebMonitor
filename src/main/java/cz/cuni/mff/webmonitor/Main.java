@@ -24,13 +24,13 @@ public class Main {
 
             for (ServiceConfig config : serviceConfigs) {
 
-                //logger.info("[{}] requesting", config.getURIAddress());
+                logger.info(config.toString());
 
                 ResponseData responseData = requester.request(config);
                 analyzer.analyze(responseData);
             }
         } catch (ConfigException e) {
-            System.err.println(Messages.messages.getString("CONFIG_ERROR") + ": " + e.getMessage());
+            logger.error(Messages.messages.getString("CONFIG_ERROR") + ": " + e.getMessage());
             System.exit(1);
         }
     }

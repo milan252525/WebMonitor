@@ -3,6 +3,7 @@ package cz.cuni.mff.webmonitor.config;
 import cz.cuni.mff.webmonitor.Constants;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.exceptions.ParserException;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -12,6 +13,8 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static cz.cuni.mff.webmonitor.Messages.messages;
 
@@ -37,8 +40,17 @@ public class ConfigLoader {
 
         GlobalConfig globalConfig = new GlobalConfig();
 
+
+        Object configObject;
+        try {
+            configObject = load.loadFromInputStream(inputStream);
+        }
+        catch (ParserException e) {
+            throw new ConfigException(messages.getString("CONFIG_PARSE_EXCEPTION") + ":\n" + e.getMessage());
+        }
+
         @SuppressWarnings("unchecked")
-        Map<String, Object> config = (Map<String, Object>) load.loadFromInputStream(inputStream);
+        Map<String, Object> config = (Map<String, Object>) configObject;
 
         if (config == null) {
             throw new ConfigException(messages.getString("CONFIG_MISSING"));
@@ -162,6 +174,11 @@ public class ConfigLoader {
                 throw new ConfigException("[" + serviceConfig.URIAddress + "] " + messages.getString("TIMEOUT_INVALID"));
             serviceConfig.timeout = timeout;
 
+            String status = getIfPresent(service, "status", serviceConfig.URIAddress.toString()).toString();
+            if (status == null)
+                status = "any";
+            serviceConfig.statusPattern = statusToPattern(status, serviceConfig);
+
             configs.add(serviceConfig);
         }
 
@@ -193,5 +210,27 @@ public class ConfigLoader {
         } catch (DateTimeParseException e) {
             return null;
         }
+    }
+
+    /**
+     * Convert status from configuration to regular expression
+     * @param status Status from config
+     * @param serviceConfig Monitored service configuration
+     * @return regex.Pattern object
+     * @throws ConfigException Invalid regular expression
+     */
+    public static Pattern statusToPattern(String status, ServiceConfig serviceConfig) throws ConfigException {
+        if (status.equals("all") || status.equals("any")) {
+            status = "[3-9]..";
+        }
+        Pattern pattern;
+        try {
+            pattern = Pattern.compile(status, Pattern.CASE_INSENSITIVE);
+        } catch (PatternSyntaxException e) {
+            throw new ConfigException("[" + serviceConfig.URIAddress + "] "
+                                            + messages.getString("STATUS_INVALID_REGEX")
+                                            + " " + e.getDescription());
+        }
+        return pattern;
     }
 }

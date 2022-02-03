@@ -3,6 +3,7 @@ package cz.cuni.mff.webmonitor.config;
 import java.net.URI;
 import java.time.Duration;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Class holding configuration of a specific monitored service
@@ -11,7 +12,7 @@ public class ServiceConfig {
     URI URIAddress;
     NotifyLevel notifyLevel;
     String logFile;
-    List<String> statusList;
+    Pattern statusPattern;
     Duration interval;
     Duration timeout;
 
@@ -31,7 +32,7 @@ public class ServiceConfig {
                 "URIAddress=" + URIAddress +
                 ", notifyLevel=" + notifyLevel +
                 ", logFile='" + logFile + '\'' +
-                ", statusList=" + statusList +
+                ", statusPattern=" + statusPattern.toString() +
                 ", interval=" + interval +
                 ", timeout=" + timeout +
                 '}';
@@ -49,8 +50,8 @@ public class ServiceConfig {
         return logFile;
     }
 
-    public List<String> getStatusList() {
-        return statusList;
+    public Pattern getStatusPattern() {
+        return statusPattern;
     }
 
     public Duration getInterval() {

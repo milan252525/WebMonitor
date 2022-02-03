@@ -2,32 +2,35 @@ email: email@example.com
 
 services:
   - address: https://www.google.com
-    status: all
+    status: any
     log: google.log
     notify: email
     interval: 120s
     timeout: 1s
 
   - address: https://httpstat.us/200
-    status: [5*, 4*]
+    status: "[345].."
     log: mff.log
     notify: off
     interval: 3m30s
     timeout: 5s
 
   - address: https://httpstat.us/301
+    status: 300
     log: _
     notify: false
     interval: 1m
 
   - address: https://httpstat.us/403
+    status: "[45].."
     log: _
     notify: false
     interval: 1m
 
   - address: https://httpstat.us/500
+    status: 500
     log: _
-    notify: false
+    notify: email
     interval: 1m
 
 
