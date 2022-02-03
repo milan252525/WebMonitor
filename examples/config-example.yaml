@@ -6,13 +6,13 @@ services:
     log: google.log
     notify: email
     interval: 120s
-    timeout: 1s
+    timeout: 3s
 
   - address: https://httpstat.us/200
     status: "[345].."
     log: mff.log
     notify: off
-    interval: 3m30s
+    interval: 10s
     timeout: 5s
 
   - address: https://httpstat.us/301
@@ -25,7 +25,7 @@ services:
     status: "[45].."
     log: _
     notify: false
-    interval: 1m
+    interval: 15s
 
   - address: https://httpstat.us/500
     status: 500

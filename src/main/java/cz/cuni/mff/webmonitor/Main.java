@@ -8,30 +8,45 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     private static final Logger logger = LogManager.getLogger("WebMonitor");
 
-    public static void main(String[] args) throws FileNotFoundException {
-        Requester requester = new Requester();
-        ResponseAnalyzer analyzer = new ResponseAnalyzer();
-
+    public static List<ServiceConfig> loadConfiguration() {
+        List<ServiceConfig> serviceConfigs = null;
         try {
-            List<ServiceConfig> serviceConfigs = ConfigLoader.loadFromFile(new FileInputStream("examples/config-example.yaml"));
+            serviceConfigs = ConfigLoader.loadFromFile(new FileInputStream("examples/config-example.yaml"));
 
-            logger.info("Configuration loaded successfully");
-
-            for (ServiceConfig config : serviceConfigs) {
-
-                logger.info(config.toString());
-
-                ResponseData responseData = requester.request(config);
-                analyzer.analyze(responseData);
-            }
         } catch (ConfigException e) {
             logger.error(Messages.messages.getString("CONFIG_ERROR") + ": " + e.getMessage());
-            System.exit(1);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
+        return serviceConfigs;
+    }
+
+    public static void startTasks(List<ServiceConfig> serviceConfigs) {
+        ScheduledThreadPoolExecutor threadPool = new ScheduledThreadPoolExecutor(serviceConfigs.size());
+
+        for (ServiceConfig config : serviceConfigs) {
+            Runnable task = new MonitorTask(config);
+            threadPool.scheduleAtFixedRate(task,0, config.getInterval().getSeconds(), TimeUnit.SECONDS);
+        }
+
+        // safely shutdown all threads on application exit
+        Runtime.getRuntime().addShutdownHook(new Thread(threadPool::shutdown));
+    }
+
+    public static void main(String[] args) {
+        List<ServiceConfig> configuration = loadConfiguration();
+        logger.info("Configuration loaded successfully");
+
+        startTasks(configuration);
+        logger.info("All tasks started");
     }
 }

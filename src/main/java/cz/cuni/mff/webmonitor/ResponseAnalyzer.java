@@ -28,7 +28,7 @@ public class ResponseAnalyzer {
                     logger.info("TODO send email... ");
                 }
             } else {
-                logger.info("[{}] {} success" , address, status);
+                logger.info("[{}] {}" , address, status);
             }
         }
     }
