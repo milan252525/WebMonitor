@@ -4,6 +4,9 @@ import cz.cuni.mff.webmonitor.config.ServiceConfig;
 
 import java.net.http.HttpResponse;
 
+/**
+ * Class for wrapping HTTP response, exception and config into one object
+ */
 public class ResponseData {
     private final HttpResponse<String> response;
     private final boolean exceptionOccurred;
@@ -28,10 +31,16 @@ public class ResponseData {
         return response;
     }
 
+    /**
+     * @return HTTP status
+     */
     public int getStatus() {
         return response.statusCode();
     }
 
+    /**
+     * @return true if the response is valid, false if exception occured
+     */
     public boolean wasSuccess() {
         return !exceptionOccurred;
     }

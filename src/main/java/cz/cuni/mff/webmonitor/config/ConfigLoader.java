@@ -59,7 +59,7 @@ public class ConfigLoader {
         // email isn't required
         if (config.containsKey("email")) {
             String email = (String) config.get("email");
-            // they key can be present without value, ignore
+            // the key can be present without value, ignore
             if (email != null ) {
                 if (email.contains("@"))
                     globalConfig.email = email;
@@ -142,7 +142,7 @@ public class ConfigLoader {
                 throw new ConfigException("[" + address + "] " + messages.getString("ADDRESS_INVALID"));
             }
 
-            serviceConfig.logFile = (String) getIfPresent(service, "log", serviceConfig.URIAddress.toString());
+            //serviceConfig.logFile = (String) getIfPresent(service, "log", serviceConfig.URIAddress.toString());
 
             // accept all possibilities - null (no entry), String ("email", ...) or Boolean ("false")
             Object notifyLevelObject = getIfPresent(service, "notify", serviceConfig.URIAddress.toString()).toString();

@@ -7,9 +7,17 @@ import org.apache.logging.log4j.Logger;
 
 import java.net.http.HttpTimeoutException;
 
+/**
+ * Class used for analyzing HTTP responses based on configuration
+ */
 public class ResponseAnalyzer {
     private static final Logger logger = LogManager.getLogger("WebMonitor");
 
+
+    /**
+     * Analyze HTTP response and choose corresponding actions (notifications)
+     * @param data Response data object to analyze
+     */
     public void analyze(ResponseData data) {
         ServiceConfig config = data.getServiceConfig();
         String address = config.getURIAddress().toString();

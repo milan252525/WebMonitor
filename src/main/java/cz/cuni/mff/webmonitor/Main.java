@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -16,6 +15,10 @@ import java.util.concurrent.TimeUnit;
 public class Main {
     private static final Logger logger = LogManager.getLogger("WebMonitor");
 
+    /**
+     * Load configuration from YAML file
+     * @return List of monitored services
+     */
     public static List<ServiceConfig> loadConfiguration() {
         List<ServiceConfig> serviceConfigs = null;
         try {
@@ -30,6 +33,11 @@ public class Main {
         return serviceConfigs;
     }
 
+    /**
+     * Create a ScheduledThreadPoolExecutor of monitoring tasks.
+     * Adds shutdown hook to kill all tasks
+     * @param serviceConfigs List of configurations
+     */
     public static void startTasks(List<ServiceConfig> serviceConfigs) {
         ScheduledThreadPoolExecutor threadPool = new ScheduledThreadPoolExecutor(serviceConfigs.size());
 

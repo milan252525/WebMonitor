@@ -44,6 +44,17 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <reportOutputDirectory>${project.basedir}/docs</reportOutputDirectory>
+                    <destDir>docs</destDir>
+                    <show>private</show>
+                    <doctitle>${project.name} documentation</doctitle>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
