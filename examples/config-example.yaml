@@ -1,18 +1,17 @@
-email: email@example.com
+webhook: https://discord.com/api/webhooks/...
 log: log.txt
 
 services:
   - address: https://www.google.com
     status: any
-    notify: email
+    notify: discord
     interval: 120s
     timeout: 3s
 
   - address: https://httpstat.us/200
     status: "[345].."
-    notify: off
-    interval: 10s
-    timeout: 5s
+    notify: discord
+    interval: 60s
 
   - address: https://httpstat.us/301
     status: 300
@@ -21,12 +20,12 @@ services:
 
   - address: https://httpstat.us/403
     status: "[45].."
-    notify: false
-    interval: 15s
+    notify: discord
+    interval: 5m
 
   - address: https://httpstat.us/500
     status: 500
-    notify: email
+    notify: discord
     interval: 1m
 
 
