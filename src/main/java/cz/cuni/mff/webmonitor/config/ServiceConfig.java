@@ -65,4 +65,6 @@ public class ServiceConfig {
     public String getEmail() {
         return globalConfig.getEmail();
     }
+
+    public String getWebhook() { return globalConfig.getWebhook(); }
 }

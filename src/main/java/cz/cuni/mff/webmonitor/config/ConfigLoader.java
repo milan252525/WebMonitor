@@ -67,6 +67,15 @@ public class ConfigLoader {
             }
         }
 
+        // webhook isn't required
+        if (config.containsKey("webhook")) {
+            String webhook = (String) config.get("webhook");
+            // the key can be present without value, ignore
+            if (webhook != null && !webhook.equals("")) {
+                globalConfig.webhook = webhook;
+            }
+        }
+
         if (!config.containsKey("services")) {
             throw new ConfigException(messages.getString("KEY_SERVICES"));
         }
@@ -150,12 +159,18 @@ public class ConfigLoader {
                 serviceConfig.notifyLevel = NotifyLevel.FALSE;
             else {
                 String notifyLevel = notifyLevelObject.toString();
-                if ("email".equals(notifyLevel)) {
+                if (notifyLevel.equals("email")) {
                     if (!globalConfig.hasValidEmail()) {
                         throw new ConfigException(messages.getString("EMAIL_MISSING"));
                     }
                     serviceConfig.notifyLevel = NotifyLevel.EMAIL;
-                } else {
+                } else if (notifyLevel.equals("discord")) {
+                    if (!globalConfig.hasWebhook()) {
+                        throw new ConfigException(messages.getString("WEBHOOK_MISSING"));
+                    }
+                    serviceConfig.notifyLevel = NotifyLevel.DISCORD;
+                }
+                else {
                     serviceConfig.notifyLevel = NotifyLevel.FALSE;
                 }
             }

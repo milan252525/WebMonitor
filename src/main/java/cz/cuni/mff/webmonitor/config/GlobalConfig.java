@@ -5,6 +5,7 @@ package cz.cuni.mff.webmonitor.config;
  */
 public class GlobalConfig {
     String email;
+    String webhook;
 
     /**
      * @return email
@@ -15,5 +16,13 @@ public class GlobalConfig {
 
     public boolean hasValidEmail() {
         return email != null;
+    }
+
+    public boolean hasWebhook() {
+        return webhook != null && !webhook.equals("");
+    }
+
+    public String getWebhook() {
+        return webhook;
     }
 }
