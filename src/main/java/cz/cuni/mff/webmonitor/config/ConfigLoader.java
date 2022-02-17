@@ -81,7 +81,10 @@ public class ConfigLoader {
         }
 
         @SuppressWarnings("unchecked")
-        var services = (ArrayList<Map<String, Object>>) config.get("services");
+        ArrayList<Map<String, Object>> services = (ArrayList<Map<String, Object>>) config.get("services");
+        if (services.size() == 0) {
+            throw new ConfigException(messages.getString("NO_SERVICES"));
+        }
 
         return extractServices(services, globalConfig);
     }

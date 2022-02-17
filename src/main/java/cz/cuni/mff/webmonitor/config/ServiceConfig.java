@@ -2,7 +2,6 @@ package cz.cuni.mff.webmonitor.config;
 
 import java.net.URI;
 import java.time.Duration;
-import java.util.List;
 import java.util.regex.Pattern;
 
 /**

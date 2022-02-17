@@ -7,5 +7,5 @@ public interface INotifier {
      * Send a notification
      * @param data Response data object with notification config
      */
-    public void sendNotification(ResponseData data);
+    void sendNotification(ResponseData data);
 }

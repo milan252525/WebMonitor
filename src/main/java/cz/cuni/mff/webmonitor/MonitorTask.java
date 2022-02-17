@@ -1,15 +1,11 @@
 package cz.cuni.mff.webmonitor;
 
 import cz.cuni.mff.webmonitor.config.ServiceConfig;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Class representing a single monitored service
  */
 public class MonitorTask implements Runnable {
-
-    private static final Logger logger = LogManager.getLogger("WebMonitor");
 
     private final ServiceConfig config;
     private final Requester requester;

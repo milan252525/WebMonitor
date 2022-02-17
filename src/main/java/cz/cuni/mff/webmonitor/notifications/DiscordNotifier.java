@@ -3,7 +3,6 @@ package cz.cuni.mff.webmonitor.notifications;
 import cz.cuni.mff.webmonitor.ResponseData;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.http.HttpTimeoutException;
