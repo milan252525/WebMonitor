@@ -1,8 +1,14 @@
-email: email@example.com
+webhook:
+  https://discord.com/api/webhooks/941708441200754689/2y6C85ZI562tp6tfpz4b8YhJ8H2Sdh9jYRMZbOWJwhOwwsGcNVHvCn3VOAKt8Io0fY1D
+email:
+  apikey: key
+  secretkey: secret
+  from: webmonitor@webmonitor.com
+  to: email@example.com
 
 services:
   - address: https://www.example.com
-    log: example.log
+    status: "5.."
     notify: email
     interval: 2h30m30s
     timeout: 5s

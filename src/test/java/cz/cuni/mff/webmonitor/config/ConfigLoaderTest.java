@@ -20,7 +20,12 @@ class ConfigLoaderTest {
 
         ServiceConfig config = testConfig.get(0);
 
-        Assertions.assertEquals("email@example.com", config.getEmail());
+        GlobalConfig global = config.getGlobalConfig();
+
+        Assertions.assertEquals("key", global.getEmailApiKey());
+        Assertions.assertEquals("secret", global.getEmailPrivateKey());
+        Assertions.assertEquals("webmonitor@webmonitor.com", global.getEmailFrom());
+        Assertions.assertEquals("email@example.com", global.getEmailTo());
         Assertions.assertEquals("https://www.example.com", config.getURIAddress().toString());
         Assertions.assertEquals(NotifyLevel.EMAIL, config.getNotifyLevel());
         Assertions.assertEquals(Duration.ofSeconds(2 * 3600 + 30 * 60 + 30), config.getInterval());

@@ -18,6 +18,20 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+class Arguments {
+    @Parameter(description="configFile")
+    List<String> parameters = new ArrayList<>();
+
+    @Parameter(names={"--generateConfig", "-gc"}, description="Generate sample config file")
+    boolean generateConfig;
+
+    @Parameter(names="--help", help=true, description="Display all available options")
+    boolean help;
+
+    @Parameter(names={"--verbose", "-v"}, description="Log non-error messages")
+    boolean verbose;
+}
+
 public class Main {
     private static final Logger logger = LogManager.getLogger("WebMonitor");
 
@@ -59,50 +73,45 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread(threadPool::shutdown));
     }
 
-    @Parameter(description="configFile")
-    private final List<String> parameters = new ArrayList<>();
-
-    @Parameter(names={"--generateConfig", "-gc"}, description="Generate sample config file")
-    private boolean generateConfig;
-
-    @Parameter(names="--help", help=true, description="Display all available options")
-    private boolean help;
-
-    @Parameter(names={"--verbose", "-v"}, description="Log non-error messages")
-    private boolean verbose;
-
     public static void main(String[] args) {
-        Main main = new Main();
+        Arguments arguments = new Arguments();
         JCommander jct = JCommander.newBuilder()
-                .addObject(main)
+                .addObject(arguments)
                 .build();
         jct.parse(args);
 
-        if (main.help) {
+        if (arguments.help) {
             jct.usage();
             return;
         }
 
-        if (!main.verbose) {
+        if (!arguments.verbose) {
             Configurator.setLevel(logger.getName(), Level.ERROR);
         }
 
-        if (main.generateConfig) {
+        if (arguments.generateConfig) {
             logger.debug("TODO: generate");
             System.exit(0);
         }
 
-        if (main.parameters.size() != 1) {
+        // TODO REMOVE
+        if (arguments.parameters.size() == 0) {
+            arguments.parameters = new ArrayList<String>(1);
+            arguments.parameters.add("examples/config-example.yaml");
+            Configurator.setLevel(logger.getName(), Level.INFO);
+        }
+
+        if (arguments.parameters.size() != 1) {
             logger.error(Messages.messages.getString("CONFIG_ONE_FILE"));
             System.exit(1);
         }
 
         // TODO remove
-        if (Objects.equals(main.parameters.get(0), "example")) {
-            main.parameters.set(0, "examples/config-example.yaml");
+        if (Objects.equals(arguments.parameters.get(0), "example")) {
+            arguments.parameters.set(0, "examples/config-example.yaml");
         }
 
-        List<ServiceConfig> configuration = loadConfiguration(main.parameters.get(0));
+        List<ServiceConfig> configuration = loadConfiguration(arguments.parameters.get(0));
         logger.info("Configuration loaded successfully");
 
         // TODO log file (console/file)

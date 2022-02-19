@@ -1,6 +1,8 @@
 package cz.cuni.mff.webmonitor.notifications;
 
 import cz.cuni.mff.webmonitor.ResponseData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.OutputStream;
@@ -9,16 +11,19 @@ import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
 
 public class DiscordNotifier implements INotifier {
+    private static final Logger logger = LogManager.getLogger("WebMonitor");
+
     /**
-     * Send a notification
+     * Send a Discord webhook notification
      *
      * @param data Response data object with notification config
      */
     @Override
     public void sendNotification(ResponseData data) {
-        String webhookURL = data.getServiceConfig().getWebhook();
+        String webhookURL = data.getServiceConfig().getGlobalConfig().getWebhook();
         String message;
 
+        // request successful but status regex matched
         if (data.wasSuccess()) {
             message = "Status: " + data.getStatus();
         } else {
@@ -29,11 +34,12 @@ public class DiscordNotifier implements INotifier {
         }
 
         String title = data.getServiceConfig().getURIAddress().toString();
+        // required embed JSON format, not using JSON library for those few lines
         String json =
                 "{\"embeds\": [{"
                 + "\"title\": \""+ title +"\","
                 + "\"description\": \""+ message +"\","
-                + "\"color\": 16711680"
+                + "\"color\": 16711680" // red
                 + "}]}";
 
         try {
@@ -51,7 +57,7 @@ public class DiscordNotifier implements INotifier {
             connection.getInputStream().close();
             connection.disconnect();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error occurred while trying to send webhook:\n" + e.getMessage());
         }
     }
 }

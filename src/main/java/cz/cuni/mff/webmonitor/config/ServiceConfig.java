@@ -8,12 +8,11 @@ import java.util.regex.Pattern;
  * Class holding configuration of a specific monitored service
  */
 public class ServiceConfig {
-    URI URIAddress;
-    NotifyLevel notifyLevel;
-    String logFile;
-    Pattern statusPattern;
-    Duration interval;
-    Duration timeout;
+    protected URI URIAddress;
+    protected NotifyLevel notifyLevel;
+    protected Pattern statusPattern;
+    protected Duration interval;
+    protected Duration timeout;
 
     private final GlobalConfig globalConfig;
 
@@ -26,44 +25,59 @@ public class ServiceConfig {
     }
 
     @Override
+    /**
+     * String representation of config
+     */
     public String toString() {
         return "ServiceConfig{" +
                 "URIAddress=" + URIAddress +
                 ", notifyLevel=" + notifyLevel +
-                ", logFile='" + logFile + '\'' +
-                ", statusPattern=" + statusPattern.toString() +
+                ", statusPattern=" + statusPattern +
                 ", interval=" + interval +
                 ", timeout=" + timeout +
+                ", globalConfig=" + globalConfig +
                 '}';
     }
 
+    /**
+     * URI address
+     */
     public URI getURIAddress() {
         return URIAddress;
     }
 
+    /**
+     * Notification level
+     */
     public NotifyLevel getNotifyLevel() {
         return notifyLevel;
     }
 
-    public String getLogFile() {
-        return logFile;
-    }
-
+    /**
+     * Status regex pattern
+     */
     public Pattern getStatusPattern() {
         return statusPattern;
     }
 
+    /**
+     * Monitoring interval
+     */
     public Duration getInterval() {
         return interval;
     }
 
+    /**
+     * Request timeout
+     */
     public Duration getTimeout() {
         return timeout;
     }
 
-    public String getEmail() {
-        return globalConfig.getEmail();
+    /**
+     * Global configuration
+     */
+    public GlobalConfig getGlobalConfig() {
+        return globalConfig;
     }
-
-    public String getWebhook() { return globalConfig.getWebhook(); }
 }

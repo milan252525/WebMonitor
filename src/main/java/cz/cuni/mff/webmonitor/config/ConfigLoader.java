@@ -13,6 +13,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -58,12 +59,18 @@ public class ConfigLoader {
 
         // email isn't required
         if (config.containsKey("email")) {
-            String email = (String) config.get("email");
-            // the key can be present without value, ignore
-            if (email != null ) {
-                if (email.contains("@"))
-                    globalConfig.email = email;
-                else throw new ConfigException(messages.getString("EMAIL_INVALID") + " " + email);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> emailFields = (Map<String, Object>) config.get("email");
+            globalConfig.emailPrivateKey = (String) getIfPresent(emailFields, "secretkey");
+            globalConfig.emailApiKey = (String) getIfPresent(emailFields, "apikey");
+            globalConfig.emailFrom = (String) getIfPresent(emailFields, "from");
+            globalConfig.emailTo = (String) getIfPresent(emailFields, "to");
+
+            if (globalConfig.hasValidEmailConfig()) {
+                if (!globalConfig.emailFrom.contains("@"))
+                    throw new ConfigException(messages.getString("EMAIL_INVALID") + " " + globalConfig.emailFrom);
+                if (!globalConfig.emailTo.contains("@"))
+                    throw new ConfigException(messages.getString("EMAIL_INVALID") + " " + globalConfig.emailTo);
             }
         }
 
@@ -113,10 +120,15 @@ public class ConfigLoader {
         if (map.containsKey(key))
             return map.get(key);
 
-        if (addressForException != null)
-            throw new ConfigException("[" + addressForException + "] " + messages.getString("KEY_" + key.toUpperCase()));
-        else
-            throw new ConfigException(messages.getString("KEY_" + key.toUpperCase()));
+        try {
+            if (addressForException != null)
+                throw new ConfigException("[" + addressForException + "] " + messages.getString("KEY_" + key.toUpperCase()));
+            else
+                throw new ConfigException(messages.getString("KEY_" + key.toUpperCase()));
+        } catch (MissingResourceException e) {
+            throw new ConfigException(messages.getString("KEY_GENERAL") + " \"" + key + "\"");
+        }
+
     }
 
     /**
@@ -163,7 +175,7 @@ public class ConfigLoader {
             else {
                 String notifyLevel = notifyLevelObject.toString();
                 if (notifyLevel.equals("email")) {
-                    if (!globalConfig.hasValidEmail()) {
+                    if (!globalConfig.hasValidEmailConfig()) {
                         throw new ConfigException(messages.getString("EMAIL_MISSING"));
                     }
                     serviceConfig.notifyLevel = NotifyLevel.EMAIL;
