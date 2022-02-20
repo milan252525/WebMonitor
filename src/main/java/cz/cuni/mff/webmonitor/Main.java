@@ -18,6 +18,9 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Class for processing arguments with JCommander library
+ */
 class Arguments {
     @Parameter(description="configFile")
     List<String> parameters = new ArrayList<>();
@@ -32,6 +35,9 @@ class Arguments {
     boolean verbose;
 }
 
+/**
+ * Program entry point
+ */
 public class Main {
     private static final Logger logger = LogManager.getLogger("WebMonitor");
 
@@ -73,6 +79,10 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread(threadPool::shutdown));
     }
 
+    /**
+     * Entry function
+     * @param args
+     */
     public static void main(String[] args) {
         Arguments arguments = new Arguments();
         JCommander jct = JCommander.newBuilder()

@@ -17,6 +17,9 @@ import java.net.http.HttpTimeoutException;
 
 import static cz.cuni.mff.webmonitor.Messages.messages;
 
+/**
+ * Email notifications
+ */
 public class EmailNotifier implements INotifier {
     private static final Logger logger = LogManager.getLogger("WebMonitor");
 

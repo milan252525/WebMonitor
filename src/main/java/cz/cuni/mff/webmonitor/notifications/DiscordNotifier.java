@@ -13,6 +13,9 @@ import java.nio.charset.StandardCharsets;
 
 import static cz.cuni.mff.webmonitor.Messages.messages;
 
+/**
+ * Discord notifications
+ */
 public class DiscordNotifier implements INotifier {
     private static final Logger logger = LogManager.getLogger("WebMonitor");
 

@@ -7,5 +7,8 @@ import java.util.ResourceBundle;
  * TODO: possible translations
  */
 public final class Messages {
+    /**
+     * Resource file shortcut
+     */
     public static final ResourceBundle messages = ResourceBundle.getBundle("messages");
 }
