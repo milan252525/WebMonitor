@@ -1,6 +1,7 @@
 package cz.cuni.mff.webmonitor.notifications;
 
 import cz.cuni.mff.webmonitor.ResponseData;
+import cz.cuni.mff.webmonitor.config.ServiceConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,6 +10,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
+
+import static cz.cuni.mff.webmonitor.Messages.messages;
 
 public class DiscordNotifier implements INotifier {
     private static final Logger logger = LogManager.getLogger("WebMonitor");
@@ -20,7 +23,8 @@ public class DiscordNotifier implements INotifier {
      */
     @Override
     public void sendNotification(ResponseData data) {
-        String webhookURL = data.getServiceConfig().getGlobalConfig().getWebhook();
+        ServiceConfig serviceConfig = data.getServiceConfig();
+        String webhookURL = serviceConfig.getGlobalConfig().getWebhook();
         String message;
 
         // request successful but status regex matched
@@ -33,14 +37,9 @@ public class DiscordNotifier implements INotifier {
                 message = "Exception: " + data.getException().getClass().toString() + ": " + data.getException().getMessage();
         }
 
-        String title = data.getServiceConfig().getURIAddress().toString();
+        String title = serviceConfig.getURIAddress().toString();
         // required embed JSON format, not using JSON library for those few lines
-        String json =
-                "{\"embeds\": [{"
-                + "\"title\": \""+ title +"\","
-                + "\"description\": \""+ message +"\","
-                + "\"color\": 16711680" // red
-                + "}]}";
+        String json = "{\"embeds\": [{\"title\": \"%s\",\"description\": \"%s\",\"color\": 16711680}]}".formatted(title, message);
 
         try {
             HttpsURLConnection connection = (HttpsURLConnection) new URL(webhookURL).openConnection();
@@ -56,8 +55,10 @@ public class DiscordNotifier implements INotifier {
 
             connection.getInputStream().close();
             connection.disconnect();
+
+            logger.info("[{}] {}", serviceConfig.getURIAddress(), messages.getString("DISCORD_SUCCESS"));
         } catch (Exception e) {
-            logger.error("Error occurred while trying to send webhook:\n" + e.getMessage());
+            logger.error("[{}] {}:\n{}", serviceConfig.getURIAddress(), messages.getString("DISCORD_FAIL"), e.getMessage());
         }
     }
 }

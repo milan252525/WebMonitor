@@ -96,7 +96,7 @@ public class Main {
 
         // TODO REMOVE
         if (arguments.parameters.size() == 0) {
-            arguments.parameters = new ArrayList<String>(1);
+            arguments.parameters = new ArrayList<>(1);
             arguments.parameters.add("examples/config-example.yaml");
             Configurator.setLevel(logger.getName(), Level.INFO);
         }

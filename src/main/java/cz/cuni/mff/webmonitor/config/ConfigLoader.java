@@ -1,6 +1,8 @@
 package cz.cuni.mff.webmonitor.config;
 
 import cz.cuni.mff.webmonitor.Constants;
+import cz.cuni.mff.webmonitor.notifications.DiscordNotifier;
+import cz.cuni.mff.webmonitor.notifications.EmailNotifier;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.exceptions.ParserException;
@@ -73,6 +75,8 @@ public class ConfigLoader {
                     throw new ConfigException(messages.getString("EMAIL_INVALID") + " " + globalConfig.emailTo);
             }
         }
+
+        globalConfig.logFile = (String) getOrDefault(config, "log", null);
 
         // webhook isn't required
         if (config.containsKey("webhook")) {
@@ -179,11 +183,13 @@ public class ConfigLoader {
                         throw new ConfigException(messages.getString("EMAIL_MISSING"));
                     }
                     serviceConfig.notifyLevel = NotifyLevel.EMAIL;
+                    serviceConfig.notifier = new EmailNotifier();
                 } else if (notifyLevel.equals("discord")) {
                     if (!globalConfig.hasWebhook()) {
                         throw new ConfigException(messages.getString("WEBHOOK_MISSING"));
                     }
                     serviceConfig.notifyLevel = NotifyLevel.DISCORD;
+                    serviceConfig.notifier = new DiscordNotifier();
                 }
                 else {
                     serviceConfig.notifyLevel = NotifyLevel.FALSE;
@@ -195,7 +201,7 @@ public class ConfigLoader {
 
             if (interval == null)
                 throw new ConfigException("[" + serviceConfig.URIAddress + "] " + messages.getString("INTERVAL_INVALID"));
-            if (interval.getSeconds() < Constants.shortestInterval)
+            if (interval.getSeconds() < Constants.shortestIntervalSeconds)
                 throw new ConfigException("[" + serviceConfig.URIAddress + "] " + messages.getString("INTERVAL_SHORT"));
             serviceConfig.interval = interval;
 

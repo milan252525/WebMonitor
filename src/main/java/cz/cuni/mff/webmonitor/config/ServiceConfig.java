@@ -1,7 +1,11 @@
 package cz.cuni.mff.webmonitor.config;
 
+import cz.cuni.mff.webmonitor.Constants;
+import cz.cuni.mff.webmonitor.notifications.INotifier;
+
 import java.net.URI;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 /**
@@ -13,6 +17,8 @@ public class ServiceConfig {
     protected Pattern statusPattern;
     protected Duration interval;
     protected Duration timeout;
+    protected INotifier notifier;
+    private LocalDateTime lastNotification;
 
     private final GlobalConfig globalConfig;
 
@@ -25,9 +31,6 @@ public class ServiceConfig {
     }
 
     @Override
-    /**
-     * String representation of config
-     */
     public String toString() {
         return "ServiceConfig{" +
                 "URIAddress=" + URIAddress +
@@ -79,5 +82,23 @@ public class ServiceConfig {
      */
     public GlobalConfig getGlobalConfig() {
         return globalConfig;
+    }
+
+    /**
+     * Notifier
+     */
+    public INotifier getNotifier() {
+        return notifier;
+    }
+
+    /**
+     * Set last notification time to now
+     */
+    public void setLastNotification() {
+        this.lastNotification = LocalDateTime.now();
+    }
+
+    public boolean canNotifyAgain() {
+        return this.lastNotification.plusMinutes(Constants.notificationDelayMinutes).isBefore(LocalDateTime.now()) ;
     }
 }

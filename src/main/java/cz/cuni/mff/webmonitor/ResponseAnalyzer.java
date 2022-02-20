@@ -2,8 +2,6 @@ package cz.cuni.mff.webmonitor;
 
 import cz.cuni.mff.webmonitor.config.NotifyLevel;
 import cz.cuni.mff.webmonitor.config.ServiceConfig;
-import cz.cuni.mff.webmonitor.notifications.DiscordNotifier;
-import cz.cuni.mff.webmonitor.notifications.EmailNotifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,22 +26,22 @@ public class ResponseAnalyzer {
             } else {
                 logger.error("[{}] exception occurred: {}" , address, data.getException().getMessage());
             }
-            if (config.getNotifyLevel() == NotifyLevel.DISCORD) {
-                new DiscordNotifier().sendNotification(data);
-            }
-            else if (config.getNotifyLevel() == NotifyLevel.EMAIL) {
-                new EmailNotifier().sendNotification(data);
+            if (config.getNotifyLevel() != NotifyLevel.FALSE) {
+                if (config.canNotifyAgain()) {
+                    config.getNotifier().sendNotification(data);
+                    config.setLastNotification();
+                }
             }
         } else {
             String status = Integer.toString(data.getStatus());
             if (config.getStatusPattern().matcher(status).find()) {
                 logger.error("[{}] {} - {}", address, status, data.getResponse().body());
 
-                if (config.getNotifyLevel() == NotifyLevel.DISCORD) {
-                    new DiscordNotifier().sendNotification(data);
-                }
-                else if (config.getNotifyLevel() == NotifyLevel.EMAIL) {
-                    new EmailNotifier().sendNotification(data);
+                if (config.getNotifyLevel() != NotifyLevel.FALSE) {
+                    if (config.canNotifyAgain()) {
+                        config.getNotifier().sendNotification(data);
+                        config.setLastNotification();
+                    }
                 }
             } else {
                 logger.info("[{}] {}" , address, status);

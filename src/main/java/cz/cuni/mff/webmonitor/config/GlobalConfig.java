@@ -9,6 +9,7 @@ public class GlobalConfig {
     protected String emailFrom;
     protected String emailTo;
     protected String webhook;
+    protected String logFile;
 
     /**
      * Check if all email fields are set
@@ -60,5 +61,19 @@ public class GlobalConfig {
      */
     public String getEmailTo() {
         return emailTo;
+    }
+
+    /**
+     * Log file is set
+     */
+    public boolean logToFile() {
+        return logFile != null;
+    }
+
+    /**
+     * Path to log file
+     */
+    public String getLogFilePath() {
+        return logFile;
     }
 }
