@@ -8,10 +8,19 @@ import cz.cuni.mff.webmonitor.config.ServiceConfig;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -80,6 +89,27 @@ public class Main {
     }
 
     /**
+     * Set logging to file, the file will be created if it doesn't exist
+     * @param path file path
+     */
+    public static void setLogFile(String path) {
+        final LoggerContext context = LoggerContext.getContext(false);
+        final Configuration config = context.getConfiguration();
+        final PatternLayout layout = PatternLayout.newBuilder()
+                .withPattern("%d{yyyy-MM-dd HH:mm:ss} %highlight{%-5level: %msg%n%throwable}")
+                .build();
+        final Appender appender = FileAppender.newBuilder()
+                .setName("FileAppender")
+                .withFileName(path)
+                .setLayout(layout)
+                .build();
+        appender.start();
+        config.addAppender(appender);
+
+        config.getLoggerConfig("WebMonitor").addAppender(appender, Level.INFO, null);
+    }
+
+    /**
      * Entry function
      * @param args
      */
@@ -100,11 +130,17 @@ public class Main {
         }
 
         if (arguments.generateConfig) {
-            logger.debug("TODO: generate");
+            InputStream inputStream = Main.class.getResourceAsStream("config-pattern.yaml");
+            try {
+                assert inputStream != null;
+                Files.copy(inputStream, Paths.get("").toAbsolutePath());
+            } catch (IOException e) {
+                logger.error("%s:\n%s".formatted(Messages.messages.getString("GENERATE_CONF_FAIL"), e.getMessage()));
+            }
             System.exit(0);
         }
 
-        // TODO REMOVE
+        // TODO REMOVE for debugging only
         if (arguments.parameters.size() == 0) {
             arguments.parameters = new ArrayList<>(1);
             arguments.parameters.add("examples/config-example.yaml");
@@ -116,7 +152,7 @@ public class Main {
             System.exit(1);
         }
 
-        // TODO remove
+        // TODO remove for debugging only
         if (Objects.equals(arguments.parameters.get(0), "example")) {
             arguments.parameters.set(0, "examples/config-example.yaml");
         }
@@ -124,7 +160,11 @@ public class Main {
         List<ServiceConfig> configuration = loadConfiguration(arguments.parameters.get(0));
         logger.info("Configuration loaded successfully");
 
-        // TODO log file (console/file)
+        // set logging to file if configured
+        if (configuration.get(0).getGlobalConfig().logToFile()) {
+            setLogFile(configuration.get(0).getGlobalConfig().getLogFilePath());
+            logger.info("Logging to file configured");
+        }
 
         startTasks(configuration);
         logger.info("All tasks started");

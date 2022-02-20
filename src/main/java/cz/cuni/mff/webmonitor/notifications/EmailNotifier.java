@@ -72,6 +72,6 @@ public class EmailNotifier implements INotifier {
             logger.error("[{}] {}:\n{}", serviceConfig.getURIAddress(), messages.getString("EMAIL_FAIL"), e.getMessage());
         }
         if (response != null)
-            logger.info("[{}] {}", serviceConfig, messages.getString("EMAIL_SUCCESS"));
+            logger.info("[{}] {}", serviceConfig.getURIAddress(), messages.getString("EMAIL_SUCCESS"));
     }
 }

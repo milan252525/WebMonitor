@@ -1,0 +1,21 @@
+# delete webhook and email fields if they won't be used
+webhook:        # discord webhook URL
+email:
+  apikey:       # your public api key
+  secretkey:    # your private api key
+  from:         # from@domain.com
+  to:           # youremail@domain.com
+
+log:            # logging file path, leave empty for logging to console only
+
+services:
+  - address:      # website URL
+    status:       # regex for capturing statuses
+    notify:       # notification level
+    interval:     # interval between monitoring
+    timeout:      # monitoring request timeout
+
+  - address:
+    status:
+    notify:
+    interval:

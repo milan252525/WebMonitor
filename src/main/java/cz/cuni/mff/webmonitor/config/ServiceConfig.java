@@ -18,7 +18,7 @@ public class ServiceConfig {
     protected Duration interval;
     protected Duration timeout;
     protected INotifier notifier;
-    private LocalDateTime lastNotification;
+    private LocalDateTime lastNotification = null;
 
     private final GlobalConfig globalConfig;
 
@@ -99,6 +99,8 @@ public class ServiceConfig {
     }
 
     public boolean canNotifyAgain() {
+        if (this.lastNotification == null)
+            return true;
         return this.lastNotification.plusMinutes(Constants.notificationDelayMinutes).isBefore(LocalDateTime.now()) ;
     }
 }
