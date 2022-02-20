@@ -26,6 +26,7 @@ class ConfigLoaderTest {
         Assertions.assertEquals("secret", global.getEmailPrivateKey());
         Assertions.assertEquals("webmonitor@webmonitor.com", global.getEmailFrom());
         Assertions.assertEquals("email@example.com", global.getEmailTo());
+        Assertions.assertEquals("https://discord.com/api/webhooks/xxx", global.getWebhook());
         Assertions.assertEquals("https://www.example.com", config.getURIAddress().toString());
         Assertions.assertEquals(NotifyLevel.EMAIL, config.getNotifyLevel());
         Assertions.assertEquals(Duration.ofSeconds(2 * 3600 + 30 * 60 + 30), config.getInterval());

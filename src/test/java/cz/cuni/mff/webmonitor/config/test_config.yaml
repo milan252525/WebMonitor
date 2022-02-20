@@ -1,5 +1,5 @@
 webhook:
-  https://discord.com/api/webhooks/941708441200754689/2y6C85ZI562tp6tfpz4b8YhJ8H2Sdh9jYRMZbOWJwhOwwsGcNVHvCn3VOAKt8Io0fY1D
+  https://discord.com/api/webhooks/xxx
 email:
   apikey: key
   secretkey: secret
