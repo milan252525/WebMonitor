@@ -140,25 +140,17 @@ public class Main {
             return;
         }
 
-        if (!arguments.verbose) {
-            Configurator.setLevel(logger.getName(), Level.ERROR);
-        }
-
-        // TODO REMOVE for debugging only
+        /* allows to run app from IDE
         if (arguments.parameters.size() == 0) {
             arguments.parameters = new ArrayList<>(1);
             arguments.parameters.add("examples/config-example.yaml");
             Configurator.setLevel(logger.getName(), Level.INFO);
         }
+        */
 
         if (arguments.parameters.size() != 1) {
             logger.error(Messages.messages.getString("CONFIG_ONE_FILE"));
             System.exit(1);
-        }
-
-        // TODO remove for debugging only
-        if (Objects.equals(arguments.parameters.get(0), "example")) {
-            arguments.parameters.set(0, "examples/config-example.yaml");
         }
 
         List<ServiceConfig> configuration = loadConfiguration(arguments.parameters.get(0));
@@ -172,5 +164,9 @@ public class Main {
 
         startTasks(configuration);
         logger.info(Messages.messages.getString("TASKS_STARTED"));
+
+        if (!arguments.verbose) {
+            Configurator.setLevel(logger.getName(), Level.ERROR);
+        }
     }
 }
