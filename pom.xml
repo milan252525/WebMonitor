@@ -63,7 +63,7 @@
                 <version>3.3.0</version>
                 <configuration>
                     <reportOutputDirectory>${project.basedir}/docs</reportOutputDirectory>
-                    <destDir>docs</destDir>
+                    <destDir>javadoc</destDir>
                     <show>private</show>
                     <doctitle>${project.name} documentation</doctitle>
                 </configuration>

@@ -1,5 +1,6 @@
 package cz.cuni.mff.webmonitor;
 
+import cz.cuni.mff.webmonitor.config.ConfigException;
 import cz.cuni.mff.webmonitor.config.ServiceConfig;
 
 import java.net.http.*;
@@ -18,12 +19,17 @@ public class Requester {
      * @param serviceConfig Monitored service configuration
      * @return ResponseData object carrying response or exception
      */
-    public ResponseData request(ServiceConfig serviceConfig) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(serviceConfig.getURIAddress())
-                .timeout(serviceConfig.getTimeout())
-                .GET()
-                .build();
+    public ResponseData request(ServiceConfig serviceConfig) throws ConfigException {
+        HttpRequest request = null;
+        try {
+            request = HttpRequest.newBuilder()
+                    .uri(serviceConfig.getURIAddress())
+                    .timeout(serviceConfig.getTimeout())
+                    .GET()
+                    .build();
+        } catch (IllegalArgumentException e) {
+            throw new ConfigException(Messages.messages.getString("URL_INVALID"));
+        }
 
         HttpResponse<String> response = null;
 

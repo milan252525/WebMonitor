@@ -1,11 +1,15 @@
 package cz.cuni.mff.webmonitor;
 
+import cz.cuni.mff.webmonitor.config.ConfigException;
 import cz.cuni.mff.webmonitor.config.ServiceConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Class representing a single monitored service
  */
 public class MonitorTask implements Runnable {
+    private static final Logger logger = LogManager.getLogger("WebMonitor");
 
     private final ServiceConfig config;
     private final Requester requester;
@@ -24,7 +28,13 @@ public class MonitorTask implements Runnable {
      * Runs all parts of the service monitoring
      */
     private void runMonitoringTask() {
-        ResponseData responseData = requester.request(config);
+        ResponseData responseData;
+        try {
+            responseData = requester.request(config);
+        } catch (ConfigException e) {
+            logger.error("{} ({})", e.getMessage(), config.getURIAddress());
+            return;
+        }
         analyzer.analyze(responseData);
     }
 

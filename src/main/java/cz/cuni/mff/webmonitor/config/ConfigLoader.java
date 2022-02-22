@@ -37,6 +37,7 @@ public class ConfigLoader {
      * @return  List of configuration for each monitored service
      * @throws ConfigException Configuration was not properly formatted
      */
+    @SuppressWarnings("unchecked")
     public static List<ServiceConfig> loadFromFile(InputStream inputStream) throws ConfigException {
         LoadSettings settings = LoadSettings.builder().setLabel("WebMonitor configuration").build();
         Load load = new Load(settings);
@@ -47,13 +48,17 @@ public class ConfigLoader {
         Object configObject;
         try {
             configObject = load.loadFromInputStream(inputStream);
-        }
-        catch (ParserException e) {
+        } catch (Exception e) {
             throw new ConfigException(messages.getString("CONFIG_PARSE_EXCEPTION") + ":\n" + e.getMessage());
         }
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> config = (Map<String, Object>) configObject;
+        Map<String, Object> config;
+        try {
+            config = (Map<String, Object>) configObject;
+        } catch (ClassCastException e) {
+            throw new ConfigException(messages.getString("CONFIG_MISSING"));
+        }
+
 
         if (config == null) {
             throw new ConfigException(messages.getString("CONFIG_MISSING"));
@@ -61,7 +66,6 @@ public class ConfigLoader {
 
         // email isn't required
         if (config.containsKey("email")) {
-            @SuppressWarnings("unchecked")
             Map<String, Object> emailFields = (Map<String, Object>) config.get("email");
             globalConfig.emailPrivateKey = (String) getIfPresent(emailFields, "secretkey");
             globalConfig.emailApiKey = (String) getIfPresent(emailFields, "apikey");
@@ -91,9 +95,13 @@ public class ConfigLoader {
             throw new ConfigException(messages.getString("KEY_SERVICES"));
         }
 
-        @SuppressWarnings("unchecked")
-        ArrayList<Map<String, Object>> services = (ArrayList<Map<String, Object>>) config.get("services");
-        if (services.size() == 0) {
+        ArrayList<Map<String, Object>> services;
+        try {
+            services = (ArrayList<Map<String, Object>>) config.get("services");
+        } catch (ClassCastException e) {
+            throw new ConfigException(messages.getString("NO_SERVICES"));
+        }
+        if (services == null || services.size() == 0) {
             throw new ConfigException(messages.getString("NO_SERVICES"));
         }
 
@@ -170,10 +178,8 @@ public class ConfigLoader {
                 throw new ConfigException("[" + address + "] " + messages.getString("ADDRESS_INVALID"));
             }
 
-            //serviceConfig.logFile = (String) getIfPresent(service, "log", serviceConfig.URIAddress.toString());
-
             // accept all possibilities - null (no entry), String ("email", ...) or Boolean ("false")
-            Object notifyLevelObject = getIfPresent(service, "notify", serviceConfig.URIAddress.toString()).toString();
+            String notifyLevelObject = getIfPresent(service, "notify", serviceConfig.URIAddress.toString()).toString();
             if (notifyLevelObject == null)
                 serviceConfig.notifyLevel = NotifyLevel.FALSE;
             else {

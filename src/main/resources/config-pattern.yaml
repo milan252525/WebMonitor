@@ -10,7 +10,7 @@ log:            # logging file path, leave empty for logging to console only
 
 services:
   - address:      # website URL
-    status:       # regex for capturing statuses
+    status:       # regex for capturing statuses (surround with quotes)
     notify:       # notification level
     interval:     # interval between monitoring
     timeout:      # monitoring request timeout

@@ -12,7 +12,7 @@ public final class Constants {
     /**
      * Default HTTP request timeout for monitoring
      */
-    public final static String defaultTimeout = "5m";
+    public final static String defaultTimeout = "30s";
 
     /**
      * Seconds of the shortest possible interval for monitoring
