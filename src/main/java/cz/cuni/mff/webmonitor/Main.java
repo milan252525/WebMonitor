@@ -36,13 +36,13 @@ class Arguments {
     @Parameter(description="configFile")
     List<String> parameters = new ArrayList<>();
 
-    @Parameter(names={"--generateConfig", "-gc"}, description="Generate sample config file")
+    @Parameter(names={"--generateConfig", "-gc"}, description="Generate sample config file in the current directory")
     boolean generateConfig;
 
     @Parameter(names="--help", help=true, description="Display all available options")
     boolean help;
 
-    @Parameter(names={"--verbose", "-v"}, description="Log non-error messages")
+    @Parameter(names={"--verbose", "-v"}, description="Log all informational messages")
     boolean verbose;
 }
 
@@ -162,15 +162,15 @@ public class Main {
         }
 
         List<ServiceConfig> configuration = loadConfiguration(arguments.parameters.get(0));
-        logger.info("Configuration loaded successfully");
+        logger.info(Messages.messages.getString("CONFIG_LOADED"));
 
         // set logging to file if configured
         if (configuration.get(0).getGlobalConfig().logToFile()) {
             setLogFile(configuration.get(0).getGlobalConfig().getLogFilePath());
-            logger.info("Logging to file configured");
+            logger.info(Messages.messages.getString("LOGGING_TO_FILE"));
         }
 
         startTasks(configuration);
-        logger.info("All tasks started");
+        logger.info(Messages.messages.getString("TASKS_STARTED"));
     }
 }
