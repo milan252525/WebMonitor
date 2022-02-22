@@ -20,7 +20,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -111,7 +113,7 @@ public class Main {
 
     /**
      * Entry function
-     * @param args
+     * @param args CLI arguments
      */
     public static void main(String[] args) {
         Arguments arguments = new Arguments();
@@ -125,19 +127,21 @@ public class Main {
             return;
         }
 
-        if (!arguments.verbose) {
-            Configurator.setLevel(logger.getName(), Level.ERROR);
+        if (arguments.generateConfig) {
+            try {
+                InputStream source = arguments.getClass().getResourceAsStream("/config-pattern.yaml");
+                Path destination = Paths.get("").resolve("config.yaml");
+                Files.copy(Objects.requireNonNull(source), destination, StandardCopyOption.REPLACE_EXISTING);
+                source.close();
+                logger.info(Messages.messages.getString("GENERATE_SUCCESS"));
+            } catch (NullPointerException | IOException e) {
+                logger.error("{}:\n{}", Messages.messages.getString("GENERATE_CONF_FAIL"), e.getMessage());
+            }
+            return;
         }
 
-        if (arguments.generateConfig) {
-            InputStream inputStream = Main.class.getResourceAsStream("config-pattern.yaml");
-            try {
-                assert inputStream != null;
-                Files.copy(inputStream, Paths.get("").toAbsolutePath());
-            } catch (IOException e) {
-                logger.error("%s:\n%s".formatted(Messages.messages.getString("GENERATE_CONF_FAIL"), e.getMessage()));
-            }
-            System.exit(0);
+        if (!arguments.verbose) {
+            Configurator.setLevel(logger.getName(), Level.ERROR);
         }
 
         // TODO REMOVE for debugging only
