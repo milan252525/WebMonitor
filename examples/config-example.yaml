@@ -1,4 +1,11 @@
 webhook: https://discord.com/api/webhooks/...
+
+email:
+  apikey:     abc123
+  secretkey:  cba321
+  from:       from@email.com
+  to:         to@email.cz
+
 log: log.txt
 
 services:
