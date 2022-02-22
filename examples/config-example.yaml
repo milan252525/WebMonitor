@@ -3,10 +3,10 @@ webhook: https://discord.com/api/webhooks/...
 email:
   apikey:     abc123
   secretkey:  cba321
-  from:       from@email.com
-  to:         to@email.cz
+  from:       from@example.com
+  to:         to@example.com
 
-log: log.txt
+log: webmonitor.log
 
 services:
   - address: https://www.google.com
@@ -18,7 +18,7 @@ services:
   - address: https://httpstat.us/200
     status: "[345].."
     notify: discord
-    interval: 60s
+    interval: 120s
 
   - address: https://httpstat.us/301
     status: 300
@@ -27,12 +27,10 @@ services:
 
   - address: https://httpstat.us/403
     status: "[45].."
-    notify: discord
+    notify: email
     interval: 5m
 
   - address: https://httpstat.us/500
     status: 500
     notify: discord
-    interval: 1m
-
-
+    interval: 5m
