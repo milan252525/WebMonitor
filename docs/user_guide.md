@@ -5,6 +5,7 @@ It will periodically check and log a state of configured websites.
 Optionally it can be configured to send email or Discord webhook notifications.
 
 ## Javadoc
+
 Javadoc documentation is available in ``docs/javadoc`` directory.
 
 ## Installation
@@ -29,11 +30,13 @@ target/
 ```
 
 ## Usage
+
 `webmonitor` will be used instead of `WebMonitor-1.0.jar`
 
 To display available command line arguments use `webmonitor --help`
 
 ### Command line arguments
+
 First argument of the program is configuration file for monitoring. 
 
 `webmonitor config.yaml`
@@ -41,11 +44,10 @@ First argument of the program is configuration file for monitoring.
 Additional optional arguments:
 
 | argument               | function                    |
-|------------------------|-----------------------------|
+| ---------------------- | --------------------------- |
 | --help                 | display available arguments |
 | -gc (--generateConfig) | generate config template    |
 | -v (--verbose)         | enable more detailed output |
-
 
 To generate a configuration file template in the current directory use `webmonitor -gc`.
 See Configuration section for more info about configuration.
@@ -54,9 +56,11 @@ The application will only log important error messages by default.
 Use the `-v` option to enable all messages. 
 
 ## Configuration
+
 YAML formatted is used to specify all settings.
 
 **Example:**
+
 ```yaml
 webhook: https://discord.com/api/webhooks/...
 email:
@@ -74,10 +78,13 @@ services:
     interval: 120s
     timeout:  10s
 ```
+
 More complex example configuration file can be found in `examples/config-example.yaml`.
 
 ### Options
+
 #### webhook (optional)
+
 Discord webhook where notification will be sent. 
 Format: `https://discord.com/api/webhooks/abcdef`
 
@@ -87,9 +94,11 @@ This will create a new webhook which you can further customize.
 To obtain the necessary URL click on "Copy Webhook URL".
 
 #### email (optional)
+
 [Mailjet](https://www.mailjet.com/) service is used to send email notifications.
 
 Create a Mailjet account and complete following steps to enable email notifications:
+
 1. Go to `Account settings > Master API Key & Sub API key management` and copy your `API KEY` and `SECRET KEY` into your configuration.
 2. Go to `Account settings > Add a Sender Domain or Address >  Add a sender address
    `, add your **existing** email address and confirm verification email.
@@ -101,14 +110,16 @@ Copy this email address into `from` option in your config file.
 It is very likely that email notifications will arrive into your spam folder at first. Adjust your spam filter.
 
 #### log (optional)
+
 Specify where the application should log all information. Leave empty for logging into console only.
 Make sure you are using correct file path.
 
 #### services (required)
+
 A list of services to be monitored. At least one must be specified.
 
 | option   | required | description          | examples                                |
-|----------|----------|----------------------|-----------------------------------------|
+| -------- | -------- | -------------------- | --------------------------------------- |
 | address  | yes      | web address (URL)    | https://www.example.com                 |
 | status   | yes      | status regex         | explained below                         |
 | notify   | no       | notification level   | `email`, `discord` or `false` (default) |
@@ -116,6 +127,7 @@ A list of services to be monitored. At least one must be specified.
 | timeout  | no       | HTTP request timeout | as above (default: `30s`)               |
 
 #### Status regex
+
 Statuses that will be considered as errors can be specified using a regular expression.
 Default value is `"[3-9].."` (Meaning all status codes above 300). `any` is an alias for this value.  
 
