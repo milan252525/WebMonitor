@@ -1,0 +1,60 @@
+<body>
+    <p>
+        Webmonitor is a Java application for monitoring state of web services. It will periodically check and log a state of configured websites. Optionally it can be configured to send email or Discord webhook notifications.
+    </p>
+
+    <h1>User Guide</h1>
+    <p>User documentation containing installation and usage instruction can be found in: <code>docs/user_guide.pdf</code>.</p>
+
+    <h1>Functionality</h1>
+    <strong>Initialization</strong>
+    <p>
+        {@link cz.cuni.mff.webmonitor.Main} is the entry class of the program.
+        This class is responsible for processing command line arguments and calling appropriate parts of the program to load configuration and start monitoring processes.
+        Arguments are processed in {@link cz.cuni.mff.webmonitor.Arguments} class.
+        Logging and other functions are enabled based on arguments.
+    </p>
+    <p>
+        Configuration file in YAML format is loaded and processed by {@link cz.cuni.mff.webmonitor.config.ConfigLoader} class into
+        {@link cz.cuni.mff.webmonitor.config.GlobalConfig} and {@link cz.cuni.mff.webmonitor.config.ServiceConfig} objects.
+        The class is also responsible for detecting errors in configuration supplemented by user.
+    </p>
+    <p>
+        All messages are separated from the code in <code>resources/messages.properties</code> file and loaded in {@link cz.cuni.mff.webmonitor.Messages} class.
+        This would potentially allow for easy translation into multiple languages.
+    </p>
+    <p>
+        After the configuration is loaded the program creates pool of threads for each monitored service and the configuration is passed to them.
+        A task is represented by {@link cz.cuni.mff.webmonitor.monitoring.MonitorTask} object which implements Runnable interface.
+    </p>
+
+    <strong>Monitoring</strong>
+    <p>
+        Each task executes the following series of actions in a specified interval.
+        First {@link cz.cuni.mff.webmonitor.monitoring.Requester#request Requester.request} method is called to send a HTTP request.
+        The function wraps the resulting request (or exception) into a {@link cz.cuni.mff.webmonitor.monitoring.ResponseData} object.
+        This object is further passed into {@link cz.cuni.mff.webmonitor.monitoring.ResponseAnalyzer#analyze ResponseAnalyzer.analyze} method which analyzes the response
+        and triggers corresponding action based on the configuration.
+    </p>
+    <p>
+        If configured, {@link cz.cuni.mff.webmonitor.notifications.DiscordNotifier} or {@link cz.cuni.mff.webmonitor.notifications.EmailNotifier} are used to send a warning.
+    </p>
+
+    <strong>Used libraries</strong>
+    <ul>
+        <li><a href="https://jcommander.org/">JCommander</a> (CLI argument parsing)</li>
+        <li><a href="https://logging.apache.org/log4j/2.x/">Log4j 2</a> (logging)</li>
+        <li><a href="https://bitbucket.org/snakeyaml/snakeyaml/src/master/">SnakeYAML</a> (loading YAML file into Java objects)</li>
+        <li><a href="https://github.com/mailjet/mailjet-apiv3-java">Mailjet Java Wrapper</a> (email notifications)</li>
+    </ul>
+
+    <h2>Implementation notes</h2>
+    <p>
+        Email notifier was initially planned to use some well-known service like Gmail.
+        However, it proved challenging to implement sending emails using Gmail. Connecting to Gmail's SMTP servers wasn't working.
+        MailJet service appeared to be reliable after initial testing. While it is working solution, it's not ideal as setup is complicated and email get classified as spam.
+    </p>
+    <p>
+        YAML is a great format for configuration files. But it doesn't work ideally with Java. As it is statically typed language lot of casting and error checking is required when parsing the file.
+    </p>
+</body>
