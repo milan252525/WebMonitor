@@ -1,6 +1,6 @@
 package cz.cuni.mff.webmonitor.notifications;
 
-import cz.cuni.mff.webmonitor.ResponseData;
+import cz.cuni.mff.webmonitor.monitoring.ResponseData;
 import cz.cuni.mff.webmonitor.config.ServiceConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

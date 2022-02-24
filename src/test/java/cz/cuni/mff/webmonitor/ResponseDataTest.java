@@ -2,6 +2,7 @@ package cz.cuni.mff.webmonitor;
 
 import cz.cuni.mff.webmonitor.config.GlobalConfig;
 import cz.cuni.mff.webmonitor.config.ServiceConfig;
+import cz.cuni.mff.webmonitor.monitoring.ResponseData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

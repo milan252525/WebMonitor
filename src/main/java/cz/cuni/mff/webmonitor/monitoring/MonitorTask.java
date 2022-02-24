@@ -1,4 +1,4 @@
-package cz.cuni.mff.webmonitor;
+package cz.cuni.mff.webmonitor.monitoring;
 
 import cz.cuni.mff.webmonitor.config.ConfigException;
 import cz.cuni.mff.webmonitor.config.ServiceConfig;

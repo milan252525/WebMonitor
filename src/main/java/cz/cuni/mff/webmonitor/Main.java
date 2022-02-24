@@ -5,6 +5,7 @@ import com.beust.jcommander.Parameter;
 import cz.cuni.mff.webmonitor.config.ConfigException;
 import cz.cuni.mff.webmonitor.config.ConfigLoader;
 import cz.cuni.mff.webmonitor.config.ServiceConfig;
+import cz.cuni.mff.webmonitor.monitoring.MonitorTask;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +48,7 @@ class Arguments {
 }
 
 /**
- * Program entry point
+ * Program entry point, processes arguments and calls other parts of the program to run monitoring
  */
 public class Main {
     private static final Logger logger = LogManager.getLogger("WebMonitor");

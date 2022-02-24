@@ -1,4 +1,4 @@
-package cz.cuni.mff.webmonitor.config;
+package cz.cuni.mff.webmonitor.notifications;
 
 /**
  * Enum for notification levels

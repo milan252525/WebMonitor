@@ -7,7 +7,7 @@ import com.mailjet.client.transactional.SendContact;
 import com.mailjet.client.transactional.SendEmailsRequest;
 import com.mailjet.client.transactional.TransactionalEmail;
 import com.mailjet.client.transactional.response.SendEmailsResponse;
-import cz.cuni.mff.webmonitor.ResponseData;
+import cz.cuni.mff.webmonitor.monitoring.ResponseData;
 import cz.cuni.mff.webmonitor.config.GlobalConfig;
 import cz.cuni.mff.webmonitor.config.ServiceConfig;
 import org.apache.logging.log4j.LogManager;

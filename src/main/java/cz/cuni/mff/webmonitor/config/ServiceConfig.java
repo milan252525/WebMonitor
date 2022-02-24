@@ -2,6 +2,7 @@ package cz.cuni.mff.webmonitor.config;
 
 import cz.cuni.mff.webmonitor.Constants;
 import cz.cuni.mff.webmonitor.notifications.INotifier;
+import cz.cuni.mff.webmonitor.notifications.NotifyLevel;
 
 import java.net.URI;
 import java.time.Duration;

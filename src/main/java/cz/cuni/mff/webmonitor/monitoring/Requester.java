@@ -1,5 +1,6 @@
-package cz.cuni.mff.webmonitor;
+package cz.cuni.mff.webmonitor.monitoring;
 
+import cz.cuni.mff.webmonitor.Messages;
 import cz.cuni.mff.webmonitor.config.ConfigException;
 import cz.cuni.mff.webmonitor.config.ServiceConfig;
 
@@ -15,7 +16,7 @@ public class Requester {
         client = HttpClient.newHttpClient();
     }
 
-    /** Send HTTP GET request and return response or exception
+    /** Send HTTP GET request and return response or exception wrapped in ResponseData object
      * @param serviceConfig Monitored service configuration
      * @return ResponseData object carrying response or exception
      */

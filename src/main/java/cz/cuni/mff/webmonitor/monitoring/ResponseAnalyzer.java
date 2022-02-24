@@ -1,6 +1,6 @@
-package cz.cuni.mff.webmonitor;
+package cz.cuni.mff.webmonitor.monitoring;
 
-import cz.cuni.mff.webmonitor.config.NotifyLevel;
+import cz.cuni.mff.webmonitor.notifications.NotifyLevel;
 import cz.cuni.mff.webmonitor.config.ServiceConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
